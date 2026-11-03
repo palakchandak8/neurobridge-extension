@@ -1,58 +1,36 @@
 {
   "manifest_version": 3,
   "name": "NeuroBridge",
-  "version": "0.2.0",
-  "description": "Make any webpage easier to read: fonts, spacing, colors and more. Part of the NeuroBridge platform.",
-  "permissions": [
-    "storage",
-    "activeTab"
-  ],
+  "version": "3.0.0",
+  "description": "Make any webpage easier to read and hear: tuned fonts and spacing from your assessment, plus read-aloud with natural voices.",
+  "permissions": ["storage", "activeTab", "scripting", "contextMenus"],
+  "host_permissions": ["https://api.sarvam.ai/*"],
   "action": {
     "default_popup": "popup/popup.html",
     "default_title": "NeuroBridge",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "32": "icons/icon32.png",
-      "48": "icons/icon48.png"
-    }
+    "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png" }
   },
-  "icons": {
-    "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "commands": {
+    "toggle-read": {
+      "suggested_key": { "default": "Alt+Shift+R" },
+      "description": "Read the page or selection aloud, or pause and resume"
+    }
   },
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content/content.js"
-      ],
+      "matches": ["<all_urls>"],
+      "js": ["shared/defaults.js", "content/display.js", "content/reader.js"],
       "run_at": "document_idle"
     },
     {
-      "matches": [
-        "http://localhost:5147/*"
-      ],
-      "js": [
-        "content/bridge.js"
-      ],
+      "matches": ["http://localhost:5147/*"],
+      "js": ["shared/defaults.js", "shared/profile.js", "content/bridge.js"],
       "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
-    {
-      "resources": [
-        "fonts/*.woff2"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    }
+    { "resources": ["fonts/*.woff2"], "matches": ["<all_urls>"] }
   ],
-  "background": {
-    "service_worker": "background.js"
-  }
+  "background": { "service_worker": "background.js" }
 }

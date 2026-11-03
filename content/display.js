@@ -1,17 +1,8 @@
-// NeuroBridge content script: applies reading settings to the page.
+// NeuroBridge display engine: applies the reading settings (font, spacing, colours) to the page.
 (() => {
-  const DEFAULTS = {
-    enabled: false,
-    font: "default",          // default | opendyslexic | atkinson | arial | verdana | tahoma
-    fontSize: 100,            // %
-    letterSpacing: 0,         // px
-    wordSpacing: 0,           // px
-    lineHeight: 1.5,
-    paragraphSpacing: 0,      // px
-    fontWeight: 400,
-    background: "default",    // default | white | cream | blue | dark
-    textColor: "auto"         // auto | black | gray
-  };
+  if (window.__nbDisplayLoaded) return;
+  window.__nbDisplayLoaded = true;
+  const DEFAULTS = globalThis.NB.DISPLAY_DEFAULTS;
 
   const FONTS = {
     opendyslexic: '"NB OpenDyslexic", sans-serif',
@@ -117,9 +108,10 @@
     applySize(s.fontSize);
   }
 
-  chrome.storage.sync.get(DEFAULTS, apply);
+  const load = () => chrome.storage.sync.get(DEFAULTS, apply);
+  load();
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "sync") return;
-    chrome.storage.sync.get(DEFAULTS, apply);
+    if (Object.keys(changes).some((k) => k in DEFAULTS)) load();
   });
 })();

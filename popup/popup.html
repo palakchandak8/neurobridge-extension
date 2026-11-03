@@ -2,87 +2,117 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>NeuroBridge</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <header>
+<div class="app">
+  <header class="top">
     <div class="brand">
-      <span class="logo" aria-hidden="true"></span>
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="3.2"/><circle cx="18" cy="12" r="3.2"/><rect x="8" y="10.8" width="8" height="2.4" rx="1.2"/></svg></span>
       <h1>NeuroBridge</h1>
     </div>
-    <label class="switch" title="Turn reading mode on or off">
+    <label class="switch" title="Apply your reading settings to web pages">
+      <span class="switch-text" id="enabled-text">Reading mode</span>
       <input type="checkbox" id="enabled">
-      <span class="track"></span>
-      <span class="sr">Reading mode</span>
+      <span class="track" aria-hidden="true"></span>
     </label>
   </header>
 
-  <aside id="cta" hidden>
-    <p class="cta-title">Get settings that fit you</p>
-    <p class="cta-text">Take the NeuroBridge reading assessment and we'll suggest a setup for you. Takes a few minutes.</p>
-    <div class="cta-actions">
-      <a id="take-test" href="#" target="_blank" rel="noopener">Take the assessment</a>
-      <button type="button" id="dismiss-cta" class="ghost">Not now</button>
-    </div>
-  </aside>
-  <aside id="profile-ok" hidden>Your NeuroBridge profile settings are applied.</aside>
+  <section id="hero" class="hero-wrap" aria-live="polite"></section>
 
-  <main id="controls">
-    <section>
-      <label for="font">Font</label>
-      <select id="font">
-        <option value="default">Page default</option>
-        <option value="opendyslexic">OpenDyslexic</option>
-        <option value="atkinson">Atkinson Hyperlegible</option>
-        <option value="arial">Arial</option>
-        <option value="verdana">Verdana</option>
-        <option value="tahoma">Tahoma</option>
-      </select>
-      <p id="preview">The quick brown fox jumps over the lazy dog.</p>
-    </section>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button type="button" role="tab" id="tab-display" aria-controls="panel-display" aria-selected="true">Display</button>
+    <button type="button" role="tab" id="tab-listen" aria-controls="panel-listen" aria-selected="false">Listen</button>
+  </nav>
 
-    <section class="slider">
-      <label for="fontSize">Text size <output id="fontSize-out"></output></label>
-      <input type="range" id="fontSize" min="80" max="200" step="5">
-    </section>
-    <section class="slider">
-      <label for="letterSpacing">Letter spacing <output id="letterSpacing-out"></output></label>
-      <input type="range" id="letterSpacing" min="0" max="5" step="0.1">
-    </section>
-    <section class="slider">
-      <label for="wordSpacing">Word spacing <output id="wordSpacing-out"></output></label>
-      <input type="range" id="wordSpacing" min="0" max="10" step="0.5">
-    </section>
-    <section class="slider">
-      <label for="lineHeight">Line spacing <output id="lineHeight-out"></output></label>
-      <input type="range" id="lineHeight" min="1" max="2.5" step="0.1">
-    </section>
-    <section class="slider">
-      <label for="paragraphSpacing">Paragraph spacing <output id="paragraphSpacing-out"></output></label>
-      <input type="range" id="paragraphSpacing" min="0" max="40" step="2">
-    </section>
-    <section class="slider">
-      <label for="fontWeight">Text weight <output id="fontWeight-out"></output></label>
-      <input type="range" id="fontWeight" min="400" max="800" step="100">
-    </section>
-
-    <section>
-      <span class="label">Background</span>
-      <div class="swatches" id="background" role="radiogroup" aria-label="Background">
-        <button type="button" data-v="default" class="sw sw-default" title="Page default" aria-label="Page default"></button>
-        <button type="button" data-v="white" class="sw sw-white" title="White" aria-label="White"></button>
-        <button type="button" data-v="cream" class="sw sw-cream" title="Cream" aria-label="Cream"></button>
-        <button type="button" data-v="blue" class="sw sw-blue" title="Light blue" aria-label="Light blue"></button>
-        <button type="button" data-v="dark" class="sw sw-dark" title="Dark" aria-label="Dark"></button>
+  <main>
+    <!-- DISPLAY -->
+    <div class="panel" id="panel-display" role="tabpanel" aria-labelledby="tab-display">
+      <div class="sheet" id="preview" aria-label="Live preview">
+        <h2>Steady reading</h2>
+        <p>Every line has room to breathe and every word has its own space. Adjust until the page feels calm.</p>
       </div>
-    </section>
+
+      <div id="fine-toggle-wrap" hidden>
+        <button type="button" class="ghost wide" id="fine-toggle" aria-expanded="false">Fine-tune manually</button>
+      </div>
+
+      <div id="controls">
+        <div class="field">
+          <span class="label" id="font-label">Font</span>
+          <div class="fonts" id="font" role="radiogroup" aria-labelledby="font-label"></div>
+        </div>
+        <div class="sliders" id="sliders"></div>
+        <div class="field">
+          <span class="label" id="bg-label">Background</span>
+          <div class="swatches" id="background" role="radiogroup" aria-labelledby="bg-label">
+            <button type="button" role="radio" data-v="default" class="sw sw-default" aria-label="Page default"><i></i><span>Page</span></button>
+            <button type="button" role="radio" data-v="white" class="sw sw-white" aria-label="White"><i></i><span>White</span></button>
+            <button type="button" role="radio" data-v="cream" class="sw sw-cream" aria-label="Cream"><i></i><span>Cream</span></button>
+            <button type="button" role="radio" data-v="blue" class="sw sw-blue" aria-label="Light blue"><i></i><span>Blue</span></button>
+            <button type="button" role="radio" data-v="dark" class="sw sw-dark" aria-label="Dark"><i></i><span>Dark</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTEN -->
+    <div class="panel" id="panel-listen" role="tabpanel" aria-labelledby="tab-listen" hidden>
+      <div class="listen-card">
+        <h2>Hear any page</h2>
+        <p>NeuroBridge reads aloud and highlights each sentence as it goes. You can also select text on a page and press Listen.</p>
+        <div class="row">
+          <button type="button" class="btn" id="read-page">Read this page</button>
+          <button type="button" class="btn alt" id="read-sel" disabled>Read selection</button>
+        </div>
+        <p class="hint" id="listen-msg" role="status"></p>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label class="label" for="speaker">Voice</label>
+          <select id="speaker"></select>
+        </div>
+        <div class="field">
+          <label class="label" for="lang">Language</label>
+          <select id="lang"></select>
+        </div>
+      </div>
+
+      <div class="field slider" id="pace-field">
+        <label class="label" for="ttsPace">Speed <output id="ttsPace-out"></output></label>
+        <input type="range" id="ttsPace" min="0.5" max="2" step="0.05">
+      </div>
+
+      <label class="check"><input type="checkbox" id="dock"><span>Show the floating reader button on pages</span></label>
+
+      <details class="engine" id="engine">
+        <summary><span>Voice engine</span><em id="engine-state"></em></summary>
+        <div class="engine-body">
+          <label class="label" for="key">Sarvam API key</label>
+          <div class="keyrow">
+            <input type="password" id="key" placeholder="Paste your key" autocomplete="off" spellcheck="false">
+            <button type="button" class="ghost" id="key-save">Save</button>
+          </div>
+          <div class="row">
+            <button type="button" class="ghost" id="key-test">Test voice</button>
+            <span class="hint" id="key-msg" role="status"></span>
+          </div>
+          <p class="hint">Without a key, NeuroBridge uses your device's built-in voice. The shortcut for read, pause and resume is Alt+Shift+R.</p>
+        </div>
+      </details>
+    </div>
   </main>
 
   <footer>
-    <button type="button" id="reset" class="ghost">Reset settings</button>
-    <a id="open-site" href="#" target="_blank" rel="noopener">Open NeuroBridge</a>
+    <button type="button" id="reset" class="ghost">Reset display</button>
+    <a id="open-site" href="#" target="_blank" rel="noopener" class="btn small">Open NeuroBridge</a>
   </footer>
-  <script src="popup.js"></script>
+</div>
+<script src="../config.js"></script>
+<script src="../shared/defaults.js"></script>
+<script src="popup.js"></script>
 </body>
 </html>
